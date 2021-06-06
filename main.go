@@ -27,7 +27,7 @@ func main(){
     for {
         updates, err := getUpdates(offset)
         if err != nil {
-            fmt.Println("main getUpdates  err:", err.Error)
+            LogToFile("main getUpdates  err:", err.Error)
             time.Sleep(30 * time.Second)
         }
         for _, update := range updates {
@@ -38,7 +38,7 @@ func main(){
                 replyMessage(update.Message.ReplyToMessage.Message_id, update.Message.Message_id)
             }
         }
-        //fmt.Println(updates)
+        //LogToFile(updates)
     }
 	
 }
@@ -48,11 +48,11 @@ func sendMessage(text string) {
     botMessage.Text = text
     buf, err := json.Marshal(botMessage)
     if err != nil {
-        fmt.Println("sendMessage error json.Marshal")
+        LogToFile("sendMessage error json.Marshal")
     }
     _, err = http.Post(botUrl + "/sendMessage",  "application/json", bytes.NewBuffer(buf))
     if err != nil {
-        fmt.Println("sendMessage error http.Post", err)
+        LogToFile("sendMessage error http.Post", err)
     }
 }
 func replyMessage(replyMessId, messId int){
@@ -62,21 +62,21 @@ func replyMessage(replyMessId, messId int){
     copyMessage.Message_id = messId
     buf, err := json.Marshal(copyMessage)
     if err != nil {
-        fmt.Println("replyMessage error json.Marshal")
+        LogToFile("replyMessage error json.Marshal")
     }
     resp, err := http.Post(botUrl + "/copyMessage",  "application/json", bytes.NewBuffer(buf))
     if err != nil {
-        fmt.Println("replyMessage error http.Post")
+        LogToFile("replyMessage error http.Post")
     }
     defer resp.Body.Close()
     body, err := ioutil.ReadAll(resp.Body)
     if err != nil {
-        fmt.Println("replyMessage error ioutil.ReadAll")
+        LogToFile("replyMessage error ioutil.ReadAll")
     }
     var postResponse PostResponse
     err = json.Unmarshal(body, &postResponse)
     if err != nil {
-        fmt.Println("replyMessage error json.Unmarshal")
+        LogToFile("replyMessage error json.Unmarshal")
     }
 }
 func (up *Update) forwMessage (){
@@ -87,21 +87,21 @@ func (up *Update) forwMessage (){
     forMessage.Message_id = up.Message.Message_id
     buf, err := json.Marshal(forMessage)
     if err != nil {
-        fmt.Println("ForwMessage error json.Marshal")
+        LogToFile("ForwMessage error json.Marshal")
     }
     resp, err := http.Post(botUrl + "/forwardMessage",  "application/json", bytes.NewBuffer(buf))
     if err != nil {
-        fmt.Println("ForwMessage error http.Post")
+        LogToFile("ForwMessage error http.Post")
     }
     defer resp.Body.Close()
     body, err := ioutil.ReadAll(resp.Body)
     if err != nil {
-        fmt.Println("ForwMessage error ioutil.ReadAll")
+        LogToFile("ForwMessage error ioutil.ReadAll")
     }
     var postResponse PostResponse
     err = json.Unmarshal(body, &postResponse)
     if err != nil {
-        fmt.Println("ForwMessage error json.Unmarshal")
+        LogToFile("ForwMessage error json.Unmarshal")
     }
     messId_UserId[postResponse.Result.PostMessageId] = up.Message.Chat.ChatId
 
@@ -113,12 +113,12 @@ func (up *Update) forwMessage (){
 func dbTxt (s string){
     f, err := os.OpenFile("db.txt", os.O_APPEND|os.O_WRONLY, 0777)
     if err != nil {
-        fmt.Println("dbTxt error os.OpenFile")
+        LogToFile("dbTxt error os.OpenFile")
     }
     defer f.Close()
 
     if _, err = f.WriteString(s); err != nil {
-        fmt.Println("dbTxt error f.WriteString")
+        LogToFile("dbTxt error f.WriteString")
     }
 }
 
