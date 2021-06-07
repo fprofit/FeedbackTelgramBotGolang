@@ -1,7 +1,7 @@
 package main
 
 import (
-    "fmt"
+    //"fmt"
     "encoding/json"
     "net/http"
     "bytes"
@@ -27,7 +27,7 @@ func main(){
     for {
         updates, err := getUpdates(offset)
         if err != nil {
-            LogToFile("main getUpdates  err:", err.Error)
+            LogToFile("main getUpdates  err")
             time.Sleep(30 * time.Second)
         }
         for _, update := range updates {
@@ -52,7 +52,7 @@ func sendMessage(text string) {
     }
     _, err = http.Post(botUrl + "/sendMessage",  "application/json", bytes.NewBuffer(buf))
     if err != nil {
-        LogToFile("sendMessage error http.Post", err)
+        LogToFile("sendMessage error http.Post")
     }
 }
 func replyMessage(replyMessId, messId int){
