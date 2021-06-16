@@ -27,7 +27,7 @@ func main(){
     for {
         updates, err := getUpdates(offset)
         if err != nil {
-            LogToFile("main getUpdates  err")
+            LogToFile(err)
             time.Sleep(30 * time.Second)
         }
         for _, update := range updates {
@@ -38,22 +38,18 @@ func main(){
                 replyMessage(update.Message.ReplyToMessage.Message_id, update.Message.Message_id)
             }
         }
-        //LogToFile(updates)
     }
-	
 }
+
 func sendMessage(text string) {
     var botMessage BotSendMessage
     botMessage.ChatId = chatIdAdm
     botMessage.Text = text
     buf, err := json.Marshal(botMessage)
     if err != nil {
-        LogToFile("sendMessage error json.Marshal")
+        LogToFile(err)
     }
-    _, err = http.Post(botUrl + "/sendMessage",  "application/json", bytes.NewBuffer(buf))
-    if err != nil {
-        LogToFile("sendMessage error http.Post")
-    }
+    postRequestGetResponse("/sendMessage", buf)
 }
 func replyMessage(replyMessId, messId int){
     var copyMessage CopyMessage
@@ -62,22 +58,9 @@ func replyMessage(replyMessId, messId int){
     copyMessage.Message_id = messId
     buf, err := json.Marshal(copyMessage)
     if err != nil {
-        LogToFile("replyMessage error json.Marshal")
+        LogToFile(err)
     }
-    resp, err := http.Post(botUrl + "/copyMessage",  "application/json", bytes.NewBuffer(buf))
-    if err != nil {
-        LogToFile("replyMessage error http.Post")
-    }
-    defer resp.Body.Close()
-    body, err := ioutil.ReadAll(resp.Body)
-    if err != nil {
-        LogToFile("replyMessage error ioutil.ReadAll")
-    }
-    var postResponse PostResponse
-    err = json.Unmarshal(body, &postResponse)
-    if err != nil {
-        LogToFile("replyMessage error json.Unmarshal")
-    }
+    postRequestGetResponse("/copyMessage", buf)
 }
 func (up *Update) forwMessage (){
 
@@ -87,21 +70,13 @@ func (up *Update) forwMessage (){
     forMessage.Message_id = up.Message.Message_id
     buf, err := json.Marshal(forMessage)
     if err != nil {
-        LogToFile("ForwMessage error json.Marshal")
+        LogToFile(err)
     }
-    resp, err := http.Post(botUrl + "/forwardMessage",  "application/json", bytes.NewBuffer(buf))
-    if err != nil {
-        LogToFile("ForwMessage error http.Post")
-    }
-    defer resp.Body.Close()
-    body, err := ioutil.ReadAll(resp.Body)
-    if err != nil {
-        LogToFile("ForwMessage error ioutil.ReadAll")
-    }
+    resp := postRequestGetResponse("/forwardMessage", buf)
     var postResponse PostResponse
-    err = json.Unmarshal(body, &postResponse)
+    err = json.Unmarshal(resp, &postResponse)
     if err != nil {
-        LogToFile("ForwMessage error json.Unmarshal")
+        LogToFile(err)
     }
     messId_UserId[postResponse.Result.PostMessageId] = up.Message.Chat.ChatId
 
@@ -110,15 +85,16 @@ func (up *Update) forwMessage (){
     s = s + " Text: " + up.Message.Text + "\n"
     dbTxt(s)
 }
+
 func dbTxt (s string){
     f, err := os.OpenFile("db.txt", os.O_APPEND|os.O_WRONLY, 0777)
     if err != nil {
-        LogToFile("dbTxt error os.OpenFile")
+        LogToFile(err)
     }
     defer f.Close()
 
     if _, err = f.WriteString(s); err != nil {
-        LogToFile("dbTxt error f.WriteString")
+        LogToFile(err)
     }
 }
 
@@ -138,4 +114,24 @@ func getUpdates(offset int) ([]Update, error) {
         return nil, err
     }
     return restResponse.Result, nil
+}
+
+func postRequestGetResponse(method string, buf []byte) []byte{
+    for{
+        resp, err := http.Post(botUrl + method,  "application/json", bytes.NewBuffer(buf))
+        if err == nil {
+            defer resp.Body.Close()
+            body, err := ioutil.ReadAll(resp.Body)
+            if err != nil {
+                LogToFile(err)
+            }
+            return body
+        }
+        if err != nil {
+            LogToFile(err)
+            time.Sleep(30 * time.Minute)
+            continue
+        }
+    }
+    
 }

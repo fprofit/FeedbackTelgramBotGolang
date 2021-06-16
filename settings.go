@@ -18,7 +18,7 @@ func fileReadSettings () bool{
     var settings Settings
     err := json.Unmarshal(buf, &settings)
     if err != nil {
-        LogToFile("Err getUpdates json.Unmarshal")
+        LogToFile(err)
         return false
 
     }
