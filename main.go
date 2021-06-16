@@ -25,11 +25,7 @@ func main(){
     offset := 0
     sendMessage("Бот перезапущен")
     for {
-        updates, err := getUpdates(offset)
-        if err != nil {
-            LogToFile(err)
-            time.Sleep(30 * time.Second)
-        }
+        updates := getUpdates(offset)
         for _, update := range updates {
             offset = update.UpdateId + 1
             if update.Message.Chat.ChatId != chatIdAdm {
@@ -98,22 +94,28 @@ func dbTxt (s string){
     }
 }
 
-func getUpdates(offset int) ([]Update, error) {
-    resp, err := http.Get(botUrl + "/getUpdates" + "?offset=" + strconv.Itoa(offset))
-    if err != nil {
-        return nil, err
+func getUpdates(offset int) ([]Update) {
+    for {    
+        resp, err := http.Get(botUrl + "/getUpdates" + "?offset=" + strconv.Itoa(offset))
+        if err == nil {
+            defer resp.Body.Close()
+            body, err := ioutil.ReadAll(resp.Body)
+            if err != nil {
+                LogToFile(err)
+            }
+            var restResponse RestResponse
+            err = json.Unmarshal(body, &restResponse)
+            if err != nil {
+                LogToFile(err)
+            }
+            return restResponse.Result
+        }
+        if err != nil {
+            LogToFile(err)
+            time.Sleep(30 * time.Minute)
+            continue
+        }
     }
-    defer resp.Body.Close()
-    body, err := ioutil.ReadAll(resp.Body)
-    if err != nil {
-        return nil, err
-    }
-    var restResponse RestResponse
-    err = json.Unmarshal(body, &restResponse)
-    if err != nil {
-        return nil, err
-    }
-    return restResponse.Result, nil
 }
 
 func postRequestGetResponse(method string, buf []byte) []byte{
