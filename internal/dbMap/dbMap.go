@@ -9,9 +9,9 @@ import (
 )
 
 var (
-	DBFileName = ""
+	DBFileName       = ""
 	MessageID_UserID = make(map[int]int)
-	dbMutex  sync.RWMutex
+	dbMutex          sync.RWMutex
 )
 
 func AddInMap(messageID, userID int) {
@@ -21,10 +21,10 @@ func AddInMap(messageID, userID int) {
 	writeDBmap()
 }
 
-func GetUserID(messageID int) (int){
+func GetUserID(messageID int) int {
 	dbMutex.RLock()
 	defer dbMutex.RUnlock()
-	return MessageID_UserID[messageID] 
+	return MessageID_UserID[messageID]
 }
 
 func ReadDBmap() {

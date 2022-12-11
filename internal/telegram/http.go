@@ -1,15 +1,15 @@
 package telegram
 
 import (
-    "fmt"
-    "encoding/json"
-    "net/http"
-    "bytes"
-    "io/ioutil"
-    "time"
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"net/http"
+	"time"
 
-    "github.com/fprofit/FeedbackTelgramBotGolang/internal/logger"
-    "github.com/fprofit/FeedbackTelgramBotGolang/internal/settings"
+	"github.com/fprofit/FeedbackTelgramBotGolang/internal/logger"
+	"github.com/fprofit/FeedbackTelgramBotGolang/internal/settings"
 )
 
 func FuncGetMe() (getMe GetMe) {
@@ -32,44 +32,44 @@ func FuncGetMe() (getMe GetMe) {
 	return
 }
 
-func GetUpdates(offset int) ([]Update) {
-    for {    
-        resp, err := http.Get(fmt.Sprintf("https://api.telegram.org/bot%s/getUpdates?offset=%d", settings.SettingsDATA.BotToken, offset))
-        if err != nil {
-            logger.LogToFile(err)
-            time.Sleep(15 * time.Minute)
-            continue
-        } else {
-            defer resp.Body.Close()
-            body, err := ioutil.ReadAll(resp.Body)
-            if err != nil {
-                logger.LogToFile(err)
-            }
-            var restResponse RestResponse
-            err = json.Unmarshal(body, &restResponse)
-            if err != nil {
-                logger.LogToFile(err)
-            }
-            return restResponse.Result
-        }
-    }
+func GetUpdates(offset int) []Update {
+	for {
+		resp, err := http.Get(fmt.Sprintf("https://api.telegram.org/bot%s/getUpdates?offset=%d", settings.SettingsDATA.BotToken, offset))
+		if err != nil {
+			logger.LogToFile(err)
+			time.Sleep(15 * time.Minute)
+			continue
+		} else {
+			defer resp.Body.Close()
+			body, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				logger.LogToFile(err)
+			}
+			var restResponse RestResponse
+			err = json.Unmarshal(body, &restResponse)
+			if err != nil {
+				logger.LogToFile(err)
+			}
+			return restResponse.Result
+		}
+	}
 }
 
-func PostRequestGetResponse(method string, buf []byte) []byte{
-    for{
-        resp, err := http.Post(fmt.Sprintf("https://api.telegram.org/bot%s/%s", settings.SettingsDATA.BotToken, method),  "application/json", bytes.NewBuffer(buf))
-        if err != nil {
-            logger.LogToFile(err)
-            time.Sleep(15 * time.Minute)
-            continue
-        } else {
-            defer resp.Body.Close()
-            body, err := ioutil.ReadAll(resp.Body)
-            if err != nil {
-                logger.LogToFile(err)
-            }
-            return body
-        }
-    }
-    
+func PostRequestGetResponse(method string, buf []byte) []byte {
+	for {
+		resp, err := http.Post(fmt.Sprintf("https://api.telegram.org/bot%s/%s", settings.SettingsDATA.BotToken, method), "application/json", bytes.NewBuffer(buf))
+		if err != nil {
+			logger.LogToFile(err)
+			time.Sleep(15 * time.Minute)
+			continue
+		} else {
+			defer resp.Body.Close()
+			body, err := ioutil.ReadAll(resp.Body)
+			if err != nil {
+				logger.LogToFile(err)
+			}
+			return body
+		}
+	}
+
 }
