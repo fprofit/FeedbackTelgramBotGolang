@@ -9,7 +9,7 @@ import(
 
 func StartApp() {
 	offset := 0
-    telegram.SendMessage("Бот перезапущен")
+    telegram.SendMessage("Bot start")
     for {
         updates := telegram.GetUpdates(offset)
         for _, update := range updates {
