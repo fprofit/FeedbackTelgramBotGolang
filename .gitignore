@@ -1,4 +1,6 @@
 settings.txt
-db.txt
+*.txt
 *.log
 *.exe
+temp/
+logs/

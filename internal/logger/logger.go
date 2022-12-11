@@ -1,10 +1,10 @@
-package main
+package logger
+
 import(
     "time"
     "os"
     "fmt"
     "runtime"
-    "strconv"
 )
 
 func LogToFile (error error){
@@ -16,7 +16,7 @@ func LogToFile (error error){
     }
     defer file.Close()
     if ok {
-        _, err = file.WriteString(time.Now().Format("15:04") + "\t" + strconv.Itoa(line) + " " + runtime.FuncForPC(pc).Name() +"\t" + error.Error() +"\n"); 
+        _, err = file.WriteString(fmt.Sprintf("[%s] Error: %s \tline: %d %s\n", time.Now().Format("15:04"),  error.Error(), line, runtime.FuncForPC(pc).Name()))
         if err != nil {
             fmt.Println("LogToFile error file.WriteString")
         }
