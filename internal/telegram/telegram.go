@@ -8,7 +8,7 @@ import (
 	"github.com/fprofit/FeedbackTelgramBotGolang/internal/settings"
 )
 
-func (up *Update) DelMessage() {
+func (up Update) DelMessage() {
 	var botMessage BotSendMessage
 	botMessage.ChatID = up.Message.Chat.ID
 	botMessage.MessageID = up.Message.MessageID
@@ -32,7 +32,7 @@ func SendMessage(text string) {
 	PostRequestGetResponse("sendMessage", buf)
 }
 
-func (up *Update) SendMessageUser() {
+func (up Update) SendMessageUser() {
 	var botMessage BotSendMessage
 	botMessage.ChatID = up.Message.Chat.ID
 	botMessage.Text = settings.SettingsDATA.Text
@@ -44,7 +44,7 @@ func (up *Update) SendMessageUser() {
 	PostRequestGetResponse("sendMessage", buf)
 }
 
-func (up *Update) ReplyMessage() {
+func (up Update) ReplyMessage() {
 	var copyMessage BotSendMessage
 	copyMessage.ChatID = dbMap.GetUserID(up.Message.ReplyToMessage.MessageID)
 	copyMessage.FromChatID = settings.SettingsDATA.AdmID
@@ -56,7 +56,7 @@ func (up *Update) ReplyMessage() {
 	}
 	PostRequestGetResponse("copyMessage", buf)
 }
-func (up *Update) ForwMessage() {
+func (up Update) ForwMessage() {
 	var forMessage BotSendMessage
 	forMessage.ChatID = settings.SettingsDATA.AdmID
 	forMessage.FromChatID = up.Message.Chat.ID
