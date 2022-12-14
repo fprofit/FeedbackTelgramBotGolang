@@ -11,6 +11,7 @@ type User struct {
 	Username  string `json:"username,oitempty"`
 	FirstName string `json:"first_name,oitempty"`
 	LastName  string `json:"last_name,oitempty"`
+	LangCode  string `json:"language_code,omitempty"`
 }
 
 type RestResponse struct {

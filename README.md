@@ -4,7 +4,12 @@
     { 
 	    "botToken":"YOUR_BOTTOKEN",
 	    "adm_id":YOUR_ID (int),
-	    "text":"Command response text /start"
+	    "text":{"Lang_Code":"Response text in language == "lang_code" to the /start command",
+	    		"default":"Command response text /start"
+	    	   }
     }
     
+* botToken - string
+* adm_id - int
+* text - map[string]string (the "default" key is required)
 ### Select a message to reply to it

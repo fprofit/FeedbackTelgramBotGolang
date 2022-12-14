@@ -18,13 +18,32 @@ func (m Message) MessageFunc() {
 			}
 		} else if m.Chat.ID != settings.SettingsDATA.AdmID {
 			if m.Text == "/start" {
-				m.SendMessageUser()
+				m.comandStart()
 			} else {
 				m.ForwMessage()
 			}
 		}
 	} else {
 		m.DelMessage()
+	}
+}
+
+
+func (m Message)EditMessageFunc(){
+	switch m.From.LangCode {
+	case "ru":
+		SendMessage(m.Chat.ID, "Бот не может редактировать уже отправленные сообщение, отправьте сообщение заново")
+	default:
+		SendMessage(m.Chat.ID, "The bot can't edit already sent messages, please resend the message")
+		return
+	}
+}
+
+func (m Message)comandStart(){
+	if _, ok := settings.SettingsDATA.Text[m.From.LangCode]; ok {
+		SendMessage(m.Chat.ID, settings.SettingsDATA.Text[m.From.LangCode])
+	} else if _, ok := settings.SettingsDATA.Text["default"]; ok{
+		SendMessage(m.Chat.ID, settings.SettingsDATA.Text["default"])
 	}
 }
 
@@ -40,9 +59,9 @@ func (m Message) DelMessage() {
 	PostRequestGetResponse("deleteMessage", buf)
 }
 
-func SendMessage(text string) {
+func SendMessage(id int, text string) {
 	var botMessage BotSendMessage
-	botMessage.ChatID = settings.SettingsDATA.AdmID
+	botMessage.ChatID = id
 	botMessage.Text = text
 	buf, err := json.Marshal(botMessage)
 	if err != nil {
@@ -52,17 +71,6 @@ func SendMessage(text string) {
 	PostRequestGetResponse("sendMessage", buf)
 }
 
-func (m Message) SendMessageUser() {
-	var botMessage BotSendMessage
-	botMessage.ChatID = m.Chat.ID
-	botMessage.Text = settings.SettingsDATA.Text
-	buf, err := json.Marshal(botMessage)
-	if err != nil {
-		logger.LogToFile(err)
-		return
-	}
-	PostRequestGetResponse("sendMessage", buf)
-}
 
 func (m Message) ReplyMessage() {
 	var copyMessage BotSendMessage

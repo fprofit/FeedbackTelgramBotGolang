@@ -1,10 +1,15 @@
 # Feedback Telgram Bot Golang
-### Создайте файл "settings.txt" в папке проекта или бинарного файла с содержанием
+### Cоздайте файл "settings.txt" в папке проекта или бинарного файла с содержанием
 
     { 
 	    "botToken":"Ваш БОТ ТОКЕН",
-	    "adm_id":Ваш ID(int),
-	    "text":"Текст для ответа на команду /start"
+	    "adm_id":Ваш ID (int),
+	    "text":{"Lang_Code":"Текст для ответа Язык == "lang_code" на команду /start",
+	    		"default":"Текст для ответа на команду /start"
+	    	   }
     }
     
+* botToken - string
+* adm_id - int
+* text - map[string]string (ключ "default" обязателен)
 ### Выберите сообщение чтобы ответить на него

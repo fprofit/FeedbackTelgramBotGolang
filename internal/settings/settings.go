@@ -8,7 +8,7 @@ import (
 type Settings struct {
 	BotToken string `json:"botToken"`
 	AdmID    int    `json:"adm_id"`
-	Text     string `json:"text"`
+	Text     map[string]string `json:"text"`
 }
 
 var SettingsDATA Settings
