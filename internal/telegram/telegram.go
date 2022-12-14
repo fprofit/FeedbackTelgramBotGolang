@@ -28,21 +28,22 @@ func (m Message) MessageFunc() {
 	}
 }
 
-
-func (m Message)EditMessageFunc(){
-	switch m.From.LangCode {
-	case "ru":
-		SendMessage(m.Chat.ID, "Бот не может редактировать уже отправленные сообщение, отправьте сообщение заново")
-	default:
-		SendMessage(m.Chat.ID, "The bot can't edit already sent messages, please resend the message")
-		return
+func (m Message) EditMessageFunc() {
+	if m.Chat.ID == m.From.ID {
+		switch m.From.LangCode {
+		case "ru":
+			SendMessage(m.Chat.ID, "Бот не может редактировать уже отправленные сообщение, отправьте сообщение заново")
+		default:
+			SendMessage(m.Chat.ID, "The bot can't edit already sent messages, please resend the message")
+			return
+		}
 	}
 }
 
-func (m Message)comandStart(){
+func (m Message) comandStart() {
 	if _, ok := settings.SettingsDATA.Text[m.From.LangCode]; ok {
 		SendMessage(m.Chat.ID, settings.SettingsDATA.Text[m.From.LangCode])
-	} else if _, ok := settings.SettingsDATA.Text["default"]; ok{
+	} else if _, ok := settings.SettingsDATA.Text["default"]; ok {
 		SendMessage(m.Chat.ID, settings.SettingsDATA.Text["default"])
 	}
 }
@@ -70,7 +71,6 @@ func SendMessage(id int, text string) {
 	}
 	PostRequestGetResponse("sendMessage", buf)
 }
-
 
 func (m Message) ReplyMessage() {
 	var copyMessage BotSendMessage

@@ -2,7 +2,7 @@ package app
 
 import (
 	"time"
-	
+
 	"github.com/fprofit/FeedbackTelgramBotGolang/internal/settings"
 	"github.com/fprofit/FeedbackTelgramBotGolang/internal/telegram"
 )

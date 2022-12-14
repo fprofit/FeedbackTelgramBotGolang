@@ -6,8 +6,8 @@ import (
 )
 
 type Settings struct {
-	BotToken string `json:"botToken"`
-	AdmID    int    `json:"adm_id"`
+	BotToken string            `json:"botToken"`
+	AdmID    int               `json:"adm_id"`
 	Text     map[string]string `json:"text"`
 }
 
