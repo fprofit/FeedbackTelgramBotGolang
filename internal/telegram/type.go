@@ -19,8 +19,9 @@ type RestResponse struct {
 }
 
 type Update struct {
-	UpdateID int     `json:"update_id"`
-	Message  Message `json:"message"`
+	UpdateID    int      `json:"update_id"`
+	Message     *Message `json:"message,omitempty"`
+	EditMessage *Message `json:"edited_message,omitempty"`
 }
 
 type PostResponse struct {
@@ -29,15 +30,11 @@ type PostResponse struct {
 }
 
 type Message struct {
-	MessageID      int            `json:"message_id"`
-	From           User           `json:"from,omitempty"`
-	Chat           User           `json:"chat,omitempty"`
-	Text           string         `json:"text,omitempty"`
-	ReplyToMessage ReplyToMessage `json:"reply_to_message"`
-}
-
-type ReplyToMessage struct {
-	MessageID int `json:"message_id"`
+	MessageID      int      `json:"message_id"`
+	From           User     `json:"from,omitempty"`
+	Chat           User     `json:"chat,omitempty"`
+	Text           string   `json:"text,omitempty"`
+	ReplyToMessage *Message `json:"reply_to_message"`
 }
 
 type BotSendMessage struct {

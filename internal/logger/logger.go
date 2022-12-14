@@ -4,10 +4,15 @@ import (
 	"fmt"
 	"os"
 	"runtime"
+	"sync"
 	"time"
 )
 
+var logMutex sync.Mutex
+
 func LogToFile(error error) {
+	logMutex.Lock()
+	defer logMutex.Unlock()
 	pc, _, line, ok := runtime.Caller(1)
 	os.MkdirAll("logs", 0777)
 	file, err := os.OpenFile("logs/"+time.Now().Format("02.01.2006")+".log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0777)

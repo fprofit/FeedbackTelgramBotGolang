@@ -10,13 +10,13 @@ import (
 
 var (
 	DBFileName       = ""
-	MessageID_UserID = make(map[int]int)
+	messageID_userID = make(map[int]int)
 	dbMutex          sync.RWMutex
 )
 
 func AddInMap(messageID, userID int) {
 	dbMutex.Lock()
-	MessageID_UserID[messageID] = userID
+	messageID_userID[messageID] = userID
 	dbMutex.Unlock()
 	writeDBmap()
 }
@@ -24,7 +24,10 @@ func AddInMap(messageID, userID int) {
 func GetUserID(messageID int) int {
 	dbMutex.RLock()
 	defer dbMutex.RUnlock()
-	return MessageID_UserID[messageID]
+	if _, ok := messageID_userID[messageID]; !ok {
+		return 0
+	}
+	return messageID_userID[messageID]
 }
 
 func ReadDBmap() {
@@ -45,7 +48,7 @@ func ReadDBmap() {
 		logger.LogToFile(err)
 		return
 	}
-	errJS := json.Unmarshal(file, &MessageID_UserID)
+	errJS := json.Unmarshal(file, &messageID_userID)
 	if errJS != nil {
 		logger.LogToFile(errJS)
 	}
@@ -60,7 +63,7 @@ func writeDBmap() {
 		logger.LogToFile(err)
 		return
 	}
-	buf, err := json.MarshalIndent(MessageID_UserID, "", "\t")
+	buf, err := json.MarshalIndent(messageID_userID, "", "\t")
 	if err != nil {
 		logger.LogToFile(err)
 	}

@@ -8,10 +8,30 @@ import (
 	"github.com/fprofit/FeedbackTelgramBotGolang/internal/settings"
 )
 
-func (up Update) DelMessage() {
+func (m Message) MessageFunc() {
+	if m.Chat.ID == m.From.ID {
+		if m.Chat.ID == settings.SettingsDATA.AdmID {
+			if m.ReplyToMessage != nil && dbMap.GetUserID(m.ReplyToMessage.MessageID) > 0 {
+				m.ReplyMessage()
+			} else {
+				m.DelMessage()
+			}
+		} else if m.Chat.ID != settings.SettingsDATA.AdmID {
+			if m.Text == "/start" {
+				m.SendMessageUser()
+			} else {
+				m.ForwMessage()
+			}
+		}
+	} else {
+		m.DelMessage()
+	}
+}
+
+func (m Message) DelMessage() {
 	var botMessage BotSendMessage
-	botMessage.ChatID = up.Message.Chat.ID
-	botMessage.MessageID = up.Message.MessageID
+	botMessage.ChatID = m.Chat.ID
+	botMessage.MessageID = m.MessageID
 	buf, err := json.Marshal(botMessage)
 	if err != nil {
 		logger.LogToFile(err)
@@ -32,9 +52,9 @@ func SendMessage(text string) {
 	PostRequestGetResponse("sendMessage", buf)
 }
 
-func (up Update) SendMessageUser() {
+func (m Message) SendMessageUser() {
 	var botMessage BotSendMessage
-	botMessage.ChatID = up.Message.Chat.ID
+	botMessage.ChatID = m.Chat.ID
 	botMessage.Text = settings.SettingsDATA.Text
 	buf, err := json.Marshal(botMessage)
 	if err != nil {
@@ -44,11 +64,11 @@ func (up Update) SendMessageUser() {
 	PostRequestGetResponse("sendMessage", buf)
 }
 
-func (up Update) ReplyMessage() {
+func (m Message) ReplyMessage() {
 	var copyMessage BotSendMessage
-	copyMessage.ChatID = dbMap.GetUserID(up.Message.ReplyToMessage.MessageID)
+	copyMessage.ChatID = dbMap.GetUserID(m.ReplyToMessage.MessageID)
 	copyMessage.FromChatID = settings.SettingsDATA.AdmID
-	copyMessage.MessageID = up.Message.MessageID
+	copyMessage.MessageID = m.MessageID
 	buf, err := json.Marshal(copyMessage)
 	if err != nil {
 		logger.LogToFile(err)
@@ -56,11 +76,11 @@ func (up Update) ReplyMessage() {
 	}
 	PostRequestGetResponse("copyMessage", buf)
 }
-func (up Update) ForwMessage() {
+func (m Message) ForwMessage() {
 	var forMessage BotSendMessage
 	forMessage.ChatID = settings.SettingsDATA.AdmID
-	forMessage.FromChatID = up.Message.Chat.ID
-	forMessage.MessageID = up.Message.MessageID
+	forMessage.FromChatID = m.Chat.ID
+	forMessage.MessageID = m.MessageID
 	buf, err := json.Marshal(forMessage)
 	if err != nil {
 		logger.LogToFile(err)
@@ -73,5 +93,5 @@ func (up Update) ForwMessage() {
 		logger.LogToFile(err)
 		return
 	}
-	dbMap.AddInMap(postResponse.Result.MessageID, up.Message.Chat.ID)
+	dbMap.AddInMap(postResponse.Result.MessageID, m.Chat.ID)
 }
