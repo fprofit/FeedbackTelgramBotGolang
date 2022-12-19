@@ -2,7 +2,8 @@ package telegram
 
 import (
 	"encoding/json"
-	"fmt"
+
+	"github.com/fprofit/FeedbackTelgramBotGolang/internal/logger"
 	"github.com/fprofit/FeedbackTelgramBotGolang/internal/settings"
 )
 
