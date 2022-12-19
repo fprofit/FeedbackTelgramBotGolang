@@ -15,6 +15,7 @@ func main() {
 		if info.Ok {
 			dbMap.DBFileName = fmt.Sprintf("%d.txt", info.Result.ID)
 			dbMap.ReadDBmap()
+			telegram.ReadDBmapUser()
 			fmt.Println(fmt.Sprintf("Start BOT: @%s", info.Result.Username))
 			app.StartApp()
 		} else {

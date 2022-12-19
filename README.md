@@ -12,4 +12,7 @@
 * botToken - string
 * adm_id - int
 * text - map[string]string (the "default" key is required)
+
+
 ### Select a message to reply to it
+### To get information about the sender, reply with a command to the selected message "/user_info" (Data may not be available due to profile privacy)

@@ -12,7 +12,11 @@ func (m Message) MessageFunc() {
 	if m.Chat.ID == m.From.ID {
 		if m.Chat.ID == settings.SettingsDATA.AdmID {
 			if m.ReplyToMessage != nil && dbMap.GetUserID(m.ReplyToMessage.MessageID) > 0 {
-				m.ReplyMessage()
+				if m.Text == "/user_info" {
+					m.getUserInfo(dbMap.GetUserID(m.ReplyToMessage.MessageID))
+				} else {
+					m.ReplyMessage()
+				}
 			} else {
 				m.DelMessage()
 			}
@@ -101,5 +105,6 @@ func (m Message) ForwMessage() {
 		logger.LogToFile(err)
 		return
 	}
+	AddInMapUserInfo(m.Chat.ID, m.From)
 	dbMap.AddInMap(postResponse.Result.MessageID, m.Chat.ID)
 }

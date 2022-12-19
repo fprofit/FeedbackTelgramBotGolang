@@ -43,4 +43,5 @@ type BotSendMessage struct {
 	Text       string `json:"text,omitempty"`
 	FromChatID int    `json:"from_chat_id,omitempty"`
 	MessageID  int    `json:"message_id,omitempty"`
+	ParseMode  string `json:"parse_mode"`
 }

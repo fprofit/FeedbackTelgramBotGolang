@@ -10,6 +10,7 @@ import (
 func StartApp() {
 	offset := 0
 	telegram.SendMessage(settings.SettingsDATA.AdmID, "Bot start")
+	telegram.SetComnd()
 	for {
 		updates := telegram.GetUpdates(offset)
 		for _, update := range updates {
