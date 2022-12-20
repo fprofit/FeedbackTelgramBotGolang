@@ -12,6 +12,26 @@ import (
 	"github.com/fprofit/FeedbackTelgramBotGolang/internal/settings"
 )
 
+func funcGetChatInfo(ID int) (getMe GetMe) {
+	resp, err := http.Get(fmt.Sprintf("https://api.telegram.org/bot%s/getChat?chat_id=%d", settings.SettingsDATA.BotToken, ID))
+	if err != nil {
+		logger.LogToFile(err)
+		return
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		logger.LogToFile(err)
+		return
+	}
+	err = json.Unmarshal(body, &getMe)
+	if err != nil {
+		logger.LogToFile(err)
+		return
+	}
+	return
+}
+
 func FuncGetMe() (getMe GetMe) {
 	resp, err := http.Get(fmt.Sprintf("https://api.telegram.org/bot%s/getMe", settings.SettingsDATA.BotToken))
 	if err != nil {

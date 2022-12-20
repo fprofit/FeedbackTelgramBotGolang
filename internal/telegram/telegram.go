@@ -105,6 +105,5 @@ func (m Message) ForwMessage() {
 		logger.LogToFile(err)
 		return
 	}
-	AddInMapUserInfo(m.Chat.ID, m.From)
 	dbMap.AddInMap(postResponse.Result.MessageID, m.Chat.ID)
 }

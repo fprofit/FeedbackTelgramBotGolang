@@ -6,12 +6,14 @@ type GetMe struct {
 }
 
 type User struct {
-	ID        int    `json:"id`
-	IsBot     bool   `json:"is_bot"`
-	Username  string `json:"username,oitempty"`
-	FirstName string `json:"first_name,oitempty"`
-	LastName  string `json:"last_name,oitempty"`
-	LangCode  string `json:"language_code,omitempty"`
+	ID                 int    `json:"id`
+	IsBot              bool   `json:"is_bot"`
+	Username           string `json:"username,oitempty"`
+	FirstName          string `json:"first_name,oitempty"`
+	LastName           string `json:"last_name,oitempty"`
+	Bio                string `json:"bio,omitempty"`
+	LangCode           string `json:"language_code,omitempty"`
+	HasPrivateForwards bool   `json:"has_private_forwards"`
 }
 
 type RestResponse struct {
