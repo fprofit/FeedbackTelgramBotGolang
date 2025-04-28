@@ -1,9 +1,9 @@
 # Feedback Telgram Bot Golang
-### Create a file "settings.txt" in the folder of the project or binary file with contents
+### Create a file "settings.json" in the folder of the project or binary file with contents
 
     { 
 	    "botToken":"YOUR_BOTTOKEN",
-	    "adm_id":YOUR_ID (int),
+	    "adm_id":YOUR_ID (int64),
 	    "text":{"Lang_Code":"Response text in language == "lang_code" to the /start command",
 	    		"default":"Command response text /start"
 	    	   }
