@@ -1,4 +1,5 @@
 settings.txt
+settings.json
 *.txt
 *.log
 *.exe

@@ -1,12 +1,5 @@
 package telegram
 
-import (
-	"encoding/json"
-
-	"github.com/fprofit/FeedbackTelgramBotGolang/internal/logger"
-	"github.com/fprofit/FeedbackTelgramBotGolang/internal/settings"
-)
-
 type MyCommands struct {
 	Commands []BotCommand    `json:"commands"`
 	Scope    BotCommandScope `json:"scope"`
@@ -19,27 +12,15 @@ type BotCommand struct {
 
 type BotCommandScope struct {
 	Type   string `json:"type"`
-	ChatId int    `json:"chat_id,oitempty"`
-	UserId int    `json:"user_id,oitempty"`
+	ChatID int64  `json:"chat_id,oitempty"`
+	UserID int64  `json:"user_id,oitempty"`
 }
 
-func SetComnd() {
-
-	var botCommand BotCommand
-	botCommand.Command = "user_info"
-	botCommand.Description = "Reply to message"
-
-	var botCommandScope BotCommandScope
-	botCommandScope.Type = "chat"
-	botCommandScope.ChatId = settings.SettingsDATA.AdmID
-
+func (tg *TG) SetComnd() {
 	var myCommands MyCommands
-	myCommands.Commands = append(myCommands.Commands, botCommand)
-	myCommands.Scope = botCommandScope
+	myCommands.Commands = []BotCommand{{Command: "user_info", Description: "🆔 Reply to message"}} //, {Command: "ban", Description: "❌ Ban"}, {Command: "un_ban", Description: "✅ UnBan"}}
+	myCommands.Scope.Type = "chat"
+	myCommands.Scope.ChatID = tg.AdmID
 
-	buf, err := json.Marshal(myCommands)
-	if err != nil {
-		logger.LogToFile(err)
-	}
-	PostRequestGetResponse("setMyCommands", buf)
+	tg.PostRequestGetResponse("setMyCommands", myCommands)
 }

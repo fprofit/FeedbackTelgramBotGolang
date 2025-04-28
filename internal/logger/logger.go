@@ -21,7 +21,7 @@ func LogToFile(error error) {
 	}
 	defer file.Close()
 	if ok {
-		_, err = file.WriteString(fmt.Sprintf("[%s] Error: %s \tline: %d %s\n", time.Now().Format("15:04"), error.Error(), line, runtime.FuncForPC(pc).Name()))
+		_, err = file.WriteString(fmt.Sprintf("[%s] %s \tline: %d %s\n", time.Now().Format("15:04"), error.Error(), line, runtime.FuncForPC(pc).Name()))
 		if err != nil {
 			fmt.Println("LogToFile error file.WriteString")
 		}

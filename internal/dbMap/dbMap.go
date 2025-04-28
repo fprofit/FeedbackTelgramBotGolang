@@ -10,18 +10,18 @@ import (
 
 var (
 	DBFileName       = ""
-	messageID_userID = make(map[int]int)
+	messageID_userID = make(map[int64]int64)
 	dbMutex          sync.RWMutex
 )
 
-func AddInMap(messageID, userID int) {
+func AddInMap(messageID, userID int64) {
 	dbMutex.Lock()
 	messageID_userID[messageID] = userID
 	dbMutex.Unlock()
 	writeDBmap()
 }
 
-func GetUserID(messageID int) int {
+func GetUserID(messageID int64) int64 {
 	dbMutex.RLock()
 	defer dbMutex.RUnlock()
 	if _, ok := messageID_userID[messageID]; !ok {
